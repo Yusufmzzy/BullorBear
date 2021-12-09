@@ -9,6 +9,7 @@ const {
   getTrendingStocks,
   getPopularStocks,
   getSimilarStocks,
+  getNews
 } = require("./handlers");
 const { createAnUser, userLogin } = require("./usersHandlers");
 express()
@@ -22,6 +23,7 @@ express()
   .get("/api/getSimilarStocks/:symbol", getSimilarStocks) // Similar stocks(in Stock detail page).
   .post("/api/users", createAnUser) // create an user.
   .post("/api/login", userLogin) // create an user.
+  .get("/api/news", getNews)
   .listen(PORT, function () {
     console.info("🌍 Listening on port " + PORT);
   });

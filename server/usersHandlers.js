@@ -11,7 +11,14 @@ const options = {
 };
 
 const createAnUser = async (req, res) => {
-  const { email, username, password, securityquestions } = req.body;
+  const {
+    email,
+    username,
+    password,
+    securityquestionanswer,
+    confirmpassword,
+    securityquestion,
+  } = req.body;
   const client = new MongoClient(MONGO_URI, options);
   try {
     await client.connect();
@@ -42,20 +49,30 @@ const createAnUser = async (req, res) => {
         status: "error",
         message: "please provide a password or provide a stronger password.",
       });
-    } else if (!securityquestions) {
+    } else if (!securityquestionanswer || !securityquestion) {
       return res.status(404).json({
         status: "error",
         message:
           "please select a security question and provide with an answer.",
       });
+    } else if (confirmpassword !== password) {
+      return res.status(404).json({
+        status: "error",
+        message:
+          "please make sure the password with confirmed password match with each other.",
+      });
     } else {
       const hashedPassword = await bcrypt.hash(password, 10);
-      const hashedsecurityquestions = await bcrypt.hash(securityquestions, 10);
+      const hashedsecurityquestions = await bcrypt.hash(
+        securityquestionanswer,
+        10
+      );
       const result = await db.collection("users").insertOne({
         username: username,
         email: email,
         password: hashedPassword,
-        securityquestions: hashedsecurityquestions,
+        securityquestionanswer: hashedsecurityquestions,
+        securityquestion: securityquestion,
       });
       result
         ? res

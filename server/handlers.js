@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { Api_KEY } = process.env;
+const { Api_KEY, Api_KEY_News } = process.env;
 const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -151,7 +151,20 @@ const getSimilarStocks = (req, res) => {
       res.status(404).json({ status: "Error", message: error });
     });
 };
-
+const getNews = (req,res) => {
+  const options = {
+    method: "GET",
+    url: `https://stocknewsapi.com/api/v1/category?section=general&items=10&token=`,
+  };
+  axios
+    .request(options)
+    .then((response) => {
+      response && res.status(200).json({ status: 200, data: response.data });
+    })
+    .catch((error) => {
+      res.status(404).json({ status: "Error", message: error });
+    });
+};
 module.exports = {
   getSingleQuote,
   getAutoComplete,
@@ -160,4 +173,5 @@ module.exports = {
   getTrendingStocks,
   getPopularStocks,
   getSimilarStocks,
+  getNews
 };
