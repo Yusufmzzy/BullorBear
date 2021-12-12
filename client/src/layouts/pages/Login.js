@@ -35,7 +35,7 @@ const Login = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        
         if (data.status === "error") {
           setSubmissionStatus("failed!");
           setErrMessage(data.message);
@@ -43,7 +43,7 @@ const Login = () => {
           setSubmissionStatus("success!");
           sessionStorage.setItem("confirmation", JSON.stringify(data.body));
           history.push("/");
-          console.log(data);
+          
         }
       });
   };

@@ -20,7 +20,7 @@ export default Main;
 const Container = styled.div`
   display: flex;
   flex-flow: column nowrap;
-  width: 100%;
+  width: 100vw;
   height: 100vh;
 `;
 
