@@ -4,7 +4,7 @@ import Login from "./Login";
 import PopularStocks from "./PopularStock";
 import TrendingStocks from "./TrendingStock";
 import Stockdetail from "./Stockdetail";
-
+import Profile from "./Profile";
 export {
   CreateUser,
   Homepage,
@@ -12,4 +12,5 @@ export {
   PopularStocks,
   TrendingStocks,
   Stockdetail,
+  Profile
 };

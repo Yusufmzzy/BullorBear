@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import image from "../imgs/Wall.jpg"
+import image from "../imgs/Wall.jpg";
+import { UserContext } from "./Context/UserContext";
+// import { UserContext } from "./Context/userContext";
 const Login = () => {
   const [submissionStatus, setSubmissionStatus] = useState("idle");
   let history = useHistory();
@@ -12,16 +14,11 @@ const Login = () => {
   };
   const [logInData, setLogInData] = useState(initialState);
   const [errMessage, setErrMessage] = useState(null);
-  const [confirmation, setConfirmation] = useState(
-    sessionStorage.getItem("confirmation")
-      ? JSON.parse(sessionStorage.getItem("confirmation"))
-      : null
-  );
-
+  const { setCurrentUser } = useContext(UserContext);
   const handleChange = (value, name) => {
     setLogInData({ ...logInData, [name]: value });
   };
-  
+
   const handleClick = (ev) => {
     ev.preventDefault();
     setSubmissionStatus("pending");
@@ -35,15 +32,14 @@ const Login = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        
         if (data.status === "error") {
           setSubmissionStatus("failed!");
           setErrMessage(data.message);
         } else {
           setSubmissionStatus("success!");
-          sessionStorage.setItem("confirmation", JSON.stringify(data.body));
+          setCurrentUser(data);
+          sessionStorage.setItem("currentUser", JSON.stringify(data.body));
           history.push("/");
-          
         }
       });
   };
@@ -53,7 +49,7 @@ const Login = () => {
         <SigninContainer>
           <Theh1>BULL&BEAR</Theh1>
           <Form onSubmit={handleClick}>
-          <lable for="Username">Username</lable>
+            <lable for="Username">Username</lable>
             <input
               name="username"
               type="text"
@@ -74,7 +70,9 @@ const Login = () => {
 
             <Button type="submit">Submit</Button>
           </Form>
-          <Accountcontainer>Dont have an account? Click <Link to="/Createuser">here.</Link></Accountcontainer>
+          <Accountcontainer>
+            Dont have an account? Click <Link to="/Createuser">here.</Link>
+          </Accountcontainer>
           {errMessage ? <p style={{ color: "red" }}>{errMessage}</p> : null}
         </SigninContainer>
       </Container>
@@ -127,11 +125,10 @@ const Button = styled.button`
   font-size: 25px;
 `;
 const Lable = styled.label`
-margin-top: 35px;
-
-`
+  margin-top: 35px;
+`;
 const Accountcontainer = styled.p`
-font-size: 15px;
-margin-bottom: 5px;
-`
+  font-size: 15px;
+  margin-bottom: 5px;
+`;
 export default Login;

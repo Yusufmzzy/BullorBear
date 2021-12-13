@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import styled from "styled-components";
 import image from "./imgs/Logo.png";
 import { BiUser } from "react-icons/bi";
 import { FiSearch } from "react-icons/fi";
+import { UserContext } from "./pages/Context/UserContext";
 
 const Header = () => {
   let history = useHistory();
@@ -11,18 +12,18 @@ const Header = () => {
   const handleChange = (ev) => {
     setInputValue(ev.target.value);
   };
+  const { currentUser, setCurrentUser } = useContext(UserContext);
 
   const [recievedVlues, setRecievedVlues] = useState("");
 
   const [selectedStock, setSelectedStock] = useState(null);
-  const [isSearched, setIsSearched] = useState(false);
 
   useEffect(() => {
     fetch(`/api/autocomplete?symbol=${inputValue}`)
       .then((res) => res.json())
       .then((data) => setRecievedVlues(data.data.ResultSet.Result));
   }, [inputValue]);
-  console.log(isSearched);
+
   let searchRef = useRef();
   const handleClick = (symbol) => {
     setSelectedStock(symbol);
@@ -31,7 +32,7 @@ const Header = () => {
   useEffect(() => {
     let handler = (ev) => {
       if (!searchRef.current.contains(ev.target)) {
-        setIsSearched(false);
+        setInputValue("");
       }
     };
     document.addEventListener("mousedown", handler);
@@ -39,6 +40,11 @@ const Header = () => {
       document.removeEventListener("mousedown", handler);
     };
   });
+
+  const handleClicking = () => {
+    setCurrentUser(null);
+    sessionStorage.clear();
+  };
   return (
     <Wrapper>
       <Logodiv>
@@ -53,18 +59,18 @@ const Header = () => {
                 onChange={(ev) => handleChange(ev)}
               />
               <Fidiv>
-                <FiSearch onClick={() => setIsSearched(!isSearched)} />
+                <FiSearch />
               </Fidiv>
             </Inputdiv>
             <SearchBarValuescontainer
               ref={searchRef}
               style={
-                recievedVlues && recievedVlues.length > 0 && isSearched === true
+                recievedVlues && recievedVlues.length > 0
                   ? { boxShadow: "0 0 3px grey", backgroundColor: "white" }
                   : null
               }
             >
-              {recievedVlues && isSearched === true
+              {recievedVlues
                 ? recievedVlues.map((ele) => (
                     <ValueContainer
                       value={ele.symbol}
@@ -78,14 +84,25 @@ const Header = () => {
             </SearchBarValuescontainer>
           </SearchBarcontainer>
           <Profilecontainer>
-            <p>Profile</p>
-            <BiUser />
-            <Link
-              to="/Login"
-              style={{ textDecoration: "none", color: "black" }}
-            >
-              <p>Sign in</p>
-            </Link>
+            {currentUser === null ? (
+              <Link
+                to="/Login"
+                style={{ textDecoration: "none", color: "black" }}
+              >
+                <p>Sign in</p>
+              </Link>
+            ) : (
+              <>
+                <StyledLink
+                  to="/Profile"
+                  style={{ textDecoration: "none", color: "black" }}
+                >
+                  <p style={{ cursor: "pointer" }}>Profile</p>
+                  <BiUser />
+                </StyledLink>
+                <Logout onClick={() => handleClicking()}>Log out</Logout>
+              </>
+            )}
           </Profilecontainer>
         </Profilediv>
       </Logodiv>
@@ -183,5 +200,18 @@ const Fidiv = styled.div`
 `;
 const Inputdiv = styled.div`
   display: flex;
+`;
+const Logout = styled.p`
+  margin-left: 15px;
+  cursor: pointer;
+  :hover {
+    transform: scale(108%);
+  }
+`;
+const StyledLink = styled(Link)`
+  display: flex;
+  :hover {
+    transform: scale(108%);
+  }
 `;
 export default Header;

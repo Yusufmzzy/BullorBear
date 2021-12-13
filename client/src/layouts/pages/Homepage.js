@@ -50,7 +50,7 @@ const Homepage = () => {
         <Wallstrertimg alt="Wall street" src={img} />
         <Newscontainer>
           {stockNews.data.map((ele) => (
-            <a href={ele.news_url}>
+            <a href={ele.news_url} style={{textDecoration:"none", color:"black"}}>
               <SingleNewscontainer>
                 <Newsimg alt="Newsimg" src={ele.image_url} />
                 <ContantsContainer>

@@ -9,6 +9,7 @@ import {
   PopularStocks,
   TrendingStocks,
   Stockdetail,
+  Profile
 } from "./layouts/pages";
 
 function App() {
@@ -34,6 +35,9 @@ function App() {
           </Route>
           <Route path="/Createuser">
             <CreateUser />
+          </Route>
+          <Route path="/Profile">
+            <Profile />
           </Route>
           <Route path="">404: opss!</Route>
         </Switch>
