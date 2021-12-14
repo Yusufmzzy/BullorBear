@@ -1,17 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { UserContext } from "./Context/UserContext";
 
 const Stockdetail = () => {
   const { symbol } = useParams();
   const [stockDetail, setStockDetail] = useState(null);
   const [insightDetails, setInsightDetails] = useState(null);
+  const { currentUser } = useContext(UserContext);
   useEffect(() => {
     fetch(`/api/quotes/${symbol}`)
       .then((res) => res.json())
       .then((data) => setStockDetail(data.data.quoteSummary.result[0].price));
   }, [symbol]);
-  console.log(stockDetail);
+
   useEffect(() => {
     fetch(`/api/getInsights/${symbol}`)
       .then((res) => res.json())
@@ -20,7 +23,7 @@ const Stockdetail = () => {
       );
   }, [symbol]);
   console.log(insightDetails);
-  return !stockDetail ? (
+  return !stockDetail || !insightDetails ? (
     <p>Loading...</p>
   ) : (
     <>
@@ -79,7 +82,74 @@ const Stockdetail = () => {
           <P>price hint: {stockDetail.priceHint.fmt}</P>
           <P>Quote type: {stockDetail.quoteType}</P>
         </StockdetailContainer>
-        <InsightDetailscontainer></InsightDetailscontainer>
+        {!insightDetails||!stockDetail ? (
+          <p>Loading...</p>
+        ) : (
+          <InsightDetailscontainer>
+            {currentUser ? (
+              <>
+                <p
+                  style={{
+                    fontSize: "25px",
+                    fontWeight: "bold",
+                    marginBottom: "10px",
+                  }}
+                >
+                  Key technicals
+                </p>
+                <p>Provider: {insightDetails.keyTechnicals.provider}</p>
+                <p>stopLoss: {insightDetails.keyTechnicals.stopLoss}</p>
+                <p>support: {insightDetails.keyTechnicals.support}</p>
+                <Break />
+                <p
+                  style={{
+                    fontSize: "25px",
+                    fontWeight: "bold",
+                    marginBottom: "10px",
+                  }}
+                >
+                  Technical events
+                </p>
+                <p>provider: {insightDetails.technicalEvents.provider}</p>
+                <p>Short term: {insightDetails.technicalEvents.shortTerm}</p>
+                <p>Mid term: {insightDetails.technicalEvents.midTerm}</p>
+                <p>Long term: {insightDetails.technicalEvents.longTerm}</p>
+                <Break />
+                <p
+                  style={{
+                    fontSize: "25px",
+                    fontWeight: "bold",
+                    marginBottom: "10px",
+                  }}
+                >
+                  Recommendation
+                </p>
+                <p>provider: {insightDetails.recommendation?.provider}</p>
+                <p>Rating: {insightDetails.recommendation?.rating}</p>
+                <p>Target price: {insightDetails.recommendation?.targetPrice}</p>
+                <Break />
+                <p
+                  style={{
+                    fontSize: "25px",
+                    fontWeight: "bold",
+                    marginBottom: "10px",
+                  }}
+                >
+                  Valuation
+                </p>
+                <p>provider: {insightDetails.valuation?.provider}</p>
+                <p>Color: {insightDetails.valuation?.color}</p>
+                <p>Description: {insightDetails.valuation?.description}</p>
+                <p>Discount: {insightDetails.valuation?.discount}</p>
+                <p>Relative value: {insightDetails.valuation?.relativeValue}</p>
+              </>
+            ) : (
+              <p style={{fontSize:"23px"}}>
+                <Link to="/Login"> Sign</Link> in for more insight analysis.
+              </p>
+            )}
+          </InsightDetailscontainer>
+        )}
       </Wrapper>
     </>
   );
@@ -100,6 +170,7 @@ const StockdetailContainer = styled.div`
 const InsightDetailscontainer = styled.div`
   height: 85%;
   width: 500px;
+  margin-left: 25px;
 `;
 const Break = styled.div`
   height: 1px;
@@ -133,6 +204,5 @@ const H1 = styled.h1`
 `;
 const Pricewrapper = styled.div`
   margin-left: 130px;
-  
 `;
 export default Stockdetail;

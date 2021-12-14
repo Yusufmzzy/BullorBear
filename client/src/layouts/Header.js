@@ -18,10 +18,15 @@ const Header = () => {
 
   const [selectedStock, setSelectedStock] = useState(null);
 
+  const [isDropped, setIsDropped] = useState(false);
+
+  const [selectedPopular, setSelectedPopular] = useState(null);
+  selectedPopular && history.push(`/PopularStocks/${selectedPopular}`);
+
   useEffect(() => {
     fetch(`/api/autocomplete?symbol=${inputValue}`)
       .then((res) => res.json())
-      .then((data) => setRecievedVlues(data.data.ResultSet.Result));
+      .then((data) => setRecievedVlues(data.data?.ResultSet.Result));
   }, [inputValue]);
 
   let searchRef = useRef();
@@ -29,9 +34,15 @@ const Header = () => {
     setSelectedStock(symbol);
   };
   selectedStock && history.push(`/Stockdetail/${selectedStock}`);
+
   useEffect(() => {
     let handler = (ev) => {
-      if (!searchRef.current.contains(ev.target)) {
+      if (
+        !searchRef.current.contains(ev.target) ||
+        searchRef.current.contains(ev.target)
+      ) {
+        // console.log(ev.target);
+        // console.log(searchRef.current.contains(ev.target));
         setInputValue("");
       }
     };
@@ -39,12 +50,39 @@ const Header = () => {
     return () => {
       document.removeEventListener("mousedown", handler);
     };
-  });
+  }, []);
 
   const handleClicking = () => {
     setCurrentUser(null);
     sessionStorage.clear();
   };
+
+  // let droppedRef = useRef();
+  const handleDroppedDownClick = (ev) => {
+    ev.stopPropagation();
+    setIsDropped(!isDropped);
+    
+  };
+
+  // useEffect(() => {
+  //   let Droppedhandler = (ev) => {
+  //     if (
+  //       !droppedRef.current.contains(ev.target) ||
+  //       droppedRef.current.contains(ev.target)
+  //     ) {
+  //       setIsDropped(false);
+  //     }
+  //     // console.log(ev.target);
+  //     // console.log(droppedRef);
+  //     // console.log(searchRef);
+  //   };
+  //   document.addEventListener("mousedown", Droppedhandler);
+  //   return () => {
+  //     document.removeEventListener("mousedown", Droppedhandler);
+  //   };
+  // }, []);
+
+  console.log(selectedPopular);
   return (
     <Wrapper>
       <Logodiv>
@@ -89,7 +127,7 @@ const Header = () => {
                 to="/Login"
                 style={{ textDecoration: "none", color: "black" }}
               >
-                <p>Sign in</p>
+                <Signin>Sign in</Signin>
               </Link>
             ) : (
               <>
@@ -108,10 +146,37 @@ const Header = () => {
       </Logodiv>
       <Navdiv>
         <Populardiv>
-          <h2>Popular Stocks</h2>
+          {/* // ref={droppedRef}
+           > */}
+          <TheOption
+            onClick={(ev) => handleDroppedDownClick(ev)}
+            onMouseEnter={() => setIsDropped(true)}
+            onMouseLeave={() => setIsDropped(false)}
+          >
+            Popular Stocks
+          </TheOption>
+          {isDropped && (
+            <Buttondiv
+              onMouseEnter={() => setIsDropped(true)}
+              onMouseLeave={() => setIsDropped(false)}
+            >
+              <Thebutton
+                value="day_gainers"
+                onClick={(ev) => setSelectedPopular(ev.target.value)}
+              >
+                Day gainers
+              </Thebutton>
+              <Thebutton
+                value="day_losers"
+                onClick={(ev) => setSelectedPopular(ev.target.value)}
+              >
+                Day losers
+              </Thebutton>
+            </Buttondiv>
+          )}
         </Populardiv>
         <Trendingdiv>
-          <h2>Trending Stocks</h2>
+          <TheOption>Trending Stocks</TheOption>
         </Trendingdiv>
       </Navdiv>
       <Breakline></Breakline>
@@ -213,5 +278,34 @@ const StyledLink = styled(Link)`
   :hover {
     transform: scale(108%);
   }
+`;
+const Signin = styled.p`
+  :hover {
+    transform: scale(108%);
+  }
+`;
+const TheOption = styled.h2`
+  :hover {
+    transform: scale(108%);
+  }
+  cursor: pointer;
+`;
+const Buttondiv = styled.div`
+  width: 110px;
+  height: 50px;
+  box-shadow: 0 0 2px grey;
+  position: absolute;
+  background-color: white;
+  margin-top: 3px;
+`;
+const Thebutton = styled.button`
+  border: none;
+  background-color: white;
+  font-size: 18px;
+  :hover {
+    background-color: grey;
+    color: white;
+  }
+  width: 110px;
 `;
 export default Header;

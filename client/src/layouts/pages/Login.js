@@ -44,7 +44,10 @@ const Login = () => {
       });
   };
   return (
-    <Wrapper style={{ backgroundImage: `url(${image})` }}>
+    <Wrapper
+      style={{
+        backgroundImage: `url(${image})`}}
+    >
       <Container>
         <SigninContainer>
           <Theh1>BULL&BEAR</Theh1>
@@ -85,15 +88,20 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 `;
 const Container = styled.div`
   height: 90%;
   width: 500px;
-  box-shadow: 0 0 3px black;
+  opacity: 95%;
+  box-shadow: 0 0 8px white;
   border-radius: 2px;
   display: grid;
   align-items: center;
   justify-content: center;
+  background-color: white;
 `;
 const SigninContainer = styled.div`
   width: 90%;

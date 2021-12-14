@@ -27,7 +27,7 @@ function App() {
           <Route path="/TrendingStocks">
             <TrendingStocks />
           </Route>
-          <Route path="/PopularStocks">
+          <Route path="/PopularStocks/:day_status">
             <PopularStocks />
           </Route>
           <Route path="/Login">

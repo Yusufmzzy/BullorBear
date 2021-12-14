@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-
+import image from "../imgs/Money.jpg"
 const CreateUser = () => {
   let history = useHistory();
   const initialState = {
@@ -51,7 +51,8 @@ const CreateUser = () => {
   // // } = req.body;
 
   return (
-    <Wrapper>
+    <Wrapper       style={{
+      backgroundImage: `url(${image})`}}>
       <Container>
         <CreateUsercontainer>
           <h3>Bull&BEAR</h3>
@@ -159,14 +160,19 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 `;
 const Container = styled.div`
   height: 90%;
   width: 500px;
-  border: black solid 2px;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color:white;
+  opacity: 95%;
+  box-shadow: 0 0 8px white;
 `;
 const CreateUsercontainer = styled.div`
   height: 90%;
