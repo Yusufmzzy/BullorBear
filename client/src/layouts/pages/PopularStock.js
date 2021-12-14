@@ -39,8 +39,8 @@ const PopularStocks = () => {
             {ele.regularMarketChangePercent.toFixed(2)} %
           </Thepercent>
           <Thepricediv>
-            <h2>
-              {ele.regularMarketPrice} {ele.currency}
+            <h2 style={{width:"110px"}}>
+              {ele.regularMarketPrice.toFixed(2)} {ele.currency}
             </h2>
           </Thepricediv>
 
@@ -74,8 +74,7 @@ const EachQuoteContainer = styled.div`
   display: flex;
 `;
 const Thepercent = styled.p`
-  margin-left: 15px;
-
+  width: 90px;
   border-radius: 5px;
   color: white;
   height: 25px;
@@ -83,6 +82,7 @@ const Thepercent = styled.p`
   align-items: center;
   font-size: 20px;
   box-shadow: 0 0 2px black;
+  padding-left:3px ;
 `;
 const Thepricediv = styled.div`
   margin-left: 50px;
@@ -90,16 +90,18 @@ const Thepricediv = styled.div`
   box-shadow: 0 0 2px black;
   height: 25px;
   border-radius: 3px;
-  background-color: #06d6a0;
   color: black;
+  padding-left:5px ;
 `;
 const Thename = styled.h1`
   :hover {
     transform: scale(105%);
     cursor: pointer;
   }
+  width: 800px;
 `;
 const Exchange = styled.h3`
-  margin-left: 20px;
+  margin-left: 50px;
+  width: 200px;
 `;
 export default PopularStocks;

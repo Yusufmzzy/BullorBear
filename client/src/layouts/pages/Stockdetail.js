@@ -1,14 +1,25 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useHistory, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { UserContext } from "./Context/UserContext";
 
 const Stockdetail = () => {
+  let history = useHistory();
+
   const { symbol } = useParams();
+
   const [stockDetail, setStockDetail] = useState(null);
+
   const [insightDetails, setInsightDetails] = useState(null);
+
   const { currentUser } = useContext(UserContext);
+
+  const [similarStocks, setSimilarStocks] = useState(null);
+
+
+  // selectedRecomand && history.push(`/Stockdetail/${selectedRecomand}`)
+
   useEffect(() => {
     fetch(`/api/quotes/${symbol}`)
       .then((res) => res.json())
@@ -22,12 +33,29 @@ const Stockdetail = () => {
         setInsightDetails(data.data.finance.result.instrumentInfo)
       );
   }, [symbol]);
-  console.log(insightDetails);
+
+  useEffect(() => {
+    fetch(`/api/getSimilarStocks/${symbol}`)
+      .then((res) => res.json())
+      .then((data) =>
+        setSimilarStocks(data.data?.finance.result[0].recommendedSymbols)
+      );
+  }, [symbol]);
+
   return !stockDetail || !insightDetails ? (
     <p>Loading...</p>
   ) : (
     <>
       <Wrapper>
+        <Recommendation>
+          {similarStocks?.map((ele) => (
+            <Therecomand
+              onClick={() => history.push(`/Stockdetail/${ele.symbol}`)}
+            >
+              {ele.symbol}
+            </Therecomand>
+          ))}
+        </Recommendation>
         <StockdetailContainer>
           <H1 style={{ fontSize: "33px" }}>
             {stockDetail.longName}
@@ -82,7 +110,7 @@ const Stockdetail = () => {
           <P>price hint: {stockDetail.priceHint.fmt}</P>
           <P>Quote type: {stockDetail.quoteType}</P>
         </StockdetailContainer>
-        {!insightDetails||!stockDetail ? (
+        {!insightDetails || !stockDetail ? (
           <p>Loading...</p>
         ) : (
           <InsightDetailscontainer>
@@ -126,7 +154,9 @@ const Stockdetail = () => {
                 </p>
                 <p>provider: {insightDetails.recommendation?.provider}</p>
                 <p>Rating: {insightDetails.recommendation?.rating}</p>
-                <p>Target price: {insightDetails.recommendation?.targetPrice}</p>
+                <p>
+                  Target price: {insightDetails.recommendation?.targetPrice}
+                </p>
                 <Break />
                 <p
                   style={{
@@ -144,7 +174,7 @@ const Stockdetail = () => {
                 <p>Relative value: {insightDetails.valuation?.relativeValue}</p>
               </>
             ) : (
-              <p style={{fontSize:"23px"}}>
+              <p style={{ fontSize: "23px" }}>
                 <Link to="/Login"> Sign</Link> in for more insight analysis.
               </p>
             )}
@@ -154,7 +184,21 @@ const Stockdetail = () => {
     </>
   );
 };
-
+const Therecomand = styled.h2`
+  cursor: pointer;
+  :hover {
+    transform: scale(107%);
+  }
+`;
+const Recommendation = styled.div`
+  width: 100px;
+  height: 100%;
+  border-right: 1px solid black;
+  margin-right: 20px;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+`;
 const Wrapper = styled.div`
   height: 100%;
   width: 100%;
@@ -164,7 +208,7 @@ const Wrapper = styled.div`
 `;
 const StockdetailContainer = styled.div`
   border-right: 1px black solid;
-  height: 95%95cm;
+  height: 95%;
   width: 500px;
 `;
 const InsightDetailscontainer = styled.div`

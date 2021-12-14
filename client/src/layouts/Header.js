@@ -61,7 +61,6 @@ const Header = () => {
   const handleDroppedDownClick = (ev) => {
     ev.stopPropagation();
     setIsDropped(!isDropped);
-    
   };
 
   // useEffect(() => {
@@ -151,14 +150,20 @@ const Header = () => {
           <TheOption
             onClick={(ev) => handleDroppedDownClick(ev)}
             onMouseEnter={() => setIsDropped(true)}
-            onMouseLeave={() => setIsDropped(false)}
+            onMouseLeave={() => {
+              setIsDropped(false);
+              setSelectedPopular(null);
+            }}
           >
             Popular Stocks
           </TheOption>
           {isDropped && (
             <Buttondiv
               onMouseEnter={() => setIsDropped(true)}
-              onMouseLeave={() => setIsDropped(false)}
+              onMouseLeave={() => {
+                setIsDropped(false);
+                setSelectedPopular(null);
+              }}
             >
               <Thebutton
                 value="day_gainers"
