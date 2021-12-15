@@ -6,10 +6,10 @@ export const WatchListContextProvider = ({ children }) => {
   const { currentUser } = useContext(UserContext);
   const [userWatchList, setUserWatchList] = useState(null);
   useEffect(() => {
-    fetch(`/api/getWatchlist/${currentUser.username}`)
+    fetch(`/api/getWatchlist/${currentUser?.username}`)
       .then((res) => res.json())
       .then((data) => setUserWatchList(data.data));
-  }, [currentUser.username]);
+  }, [currentUser?.username,userWatchList]);
 
   return (
     <WatchListContext.Provider value={{ userWatchList }}>

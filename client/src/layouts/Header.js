@@ -3,7 +3,7 @@ import { Link, useHistory } from "react-router-dom";
 import styled from "styled-components";
 import image from "./imgs/Logo.png";
 import { BiUser } from "react-icons/bi";
-import { FiSearch } from "react-icons/fi";
+import { FiSearch, FiLogIn, FiLogOut } from "react-icons/fi";
 import { UserContext } from "./pages/Context/UserContext";
 
 const Header = () => {
@@ -16,24 +16,24 @@ const Header = () => {
 
   const [recievedVlues, setRecievedVlues] = useState("");
 
-  const [selectedStock, setSelectedStock] = useState(null);
+  // const [selectedStock, setSelectedStock] = useState(null);
 
   const [isDropped, setIsDropped] = useState(false);
 
-  const [selectedPopular, setSelectedPopular] = useState(null);
-  selectedPopular && history.push(`/PopularStocks/${selectedPopular}`);
+  // const [selectedPopular, setSelectedPopular] = useState(null);
 
   useEffect(() => {
     fetch(`/api/autocomplete?symbol=${inputValue}`)
       .then((res) => res.json())
       .then((data) => setRecievedVlues(data.data?.ResultSet.Result));
+  
   }, [inputValue]);
 
   let searchRef = useRef();
   const handleClick = (symbol) => {
-    setSelectedStock(symbol);
+    history.push(`/Stockdetail/${symbol}`);
   };
-  selectedStock && history.push(`/Stockdetail/${selectedStock}`);
+  // selectedStock && history.push(`/Stockdetail/${selectedStock}`);
 
   useEffect(() => {
     let handler = (ev) => {
@@ -58,10 +58,6 @@ const Header = () => {
   };
 
   // let droppedRef = useRef();
-  const handleDroppedDownClick = (ev) => {
-    ev.stopPropagation();
-    setIsDropped(!isDropped);
-  };
 
   // useEffect(() => {
   //   let Droppedhandler = (ev) => {
@@ -81,7 +77,6 @@ const Header = () => {
   //   };
   // }, []);
 
-  
   return (
     <Wrapper>
       <Logodiv>
@@ -94,6 +89,7 @@ const Header = () => {
               <Searchbar
                 placeholder="  Enter any stock or crypto symbol..."
                 onChange={(ev) => handleChange(ev)}
+                value={inputValue}
               />
               <Fidiv>
                 <FiSearch />
@@ -126,7 +122,7 @@ const Header = () => {
                 to="/Login"
                 style={{ textDecoration: "none", color: "black" }}
               >
-                <Signin>Sign in</Signin>
+                <Signin></Signin>
               </Link>
             ) : (
               <>
@@ -137,7 +133,7 @@ const Header = () => {
                   <p style={{ cursor: "pointer" }}>Profile</p>
                   <BiUser />
                 </StyledLink>
-                <Logout onClick={() => handleClicking()}>Log out</Logout>
+                <Logout onClick={() => handleClicking()}></Logout>
               </>
             )}
           </Profilecontainer>
@@ -148,11 +144,10 @@ const Header = () => {
           {/* // ref={droppedRef}
            > */}
           <TheOption
-            onClick={(ev) => handleDroppedDownClick(ev)}
             onMouseEnter={() => setIsDropped(true)}
             onMouseLeave={() => {
               setIsDropped(false);
-              setSelectedPopular(null);
+              // setSelectedPopular(null);
             }}
           >
             Popular Stocks
@@ -162,18 +157,22 @@ const Header = () => {
               onMouseEnter={() => setIsDropped(true)}
               onMouseLeave={() => {
                 setIsDropped(false);
-                setSelectedPopular(null);
+                // setSelectedPopular(null);
               }}
             >
               <Thebutton
                 value="day_gainers"
-                onClick={(ev) => setSelectedPopular(ev.target.value)}
+                onClick={(ev) => {
+                  history.push(`/PopularStocks/${ev.target.value}`);
+                }}
               >
                 Day gainers
               </Thebutton>
               <Thebutton
                 value="day_losers"
-                onClick={(ev) => setSelectedPopular(ev.target.value)}
+                onClick={(ev) =>
+                  history.push(`/PopularStocks/${ev.target.value}`)
+                }
               >
                 Day losers
               </Thebutton>
@@ -271,7 +270,7 @@ const Fidiv = styled.div`
 const Inputdiv = styled.div`
   display: flex;
 `;
-const Logout = styled.p`
+const Logout = styled(FiLogOut)`
   margin-left: 15px;
   cursor: pointer;
   :hover {
@@ -284,7 +283,7 @@ const StyledLink = styled(Link)`
     transform: scale(108%);
   }
 `;
-const Signin = styled.p`
+const Signin = styled(FiLogIn)`
   :hover {
     transform: scale(108%);
   }

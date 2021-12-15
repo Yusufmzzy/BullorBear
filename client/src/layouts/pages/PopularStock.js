@@ -16,7 +16,7 @@ const PopularStocks = () => {
       .then((data) => setRecievedQuotes(data.data?.finance.result[0].quotes));
   }, [day_status]);
 
-  console.log(recievedQuotes);
+  
   return !recievedQuotes ? (
     <p>Loading...</p>
   ) : (

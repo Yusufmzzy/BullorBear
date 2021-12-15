@@ -25,7 +25,7 @@ const Stockdetail = () => {
 
   const arr = userWatchList?.map((ele) => ele.symbol);
 
-  console.log(arr?.includes(symbol));
+ 
   // selectedRecomand && history.push(`/Stockdetail/${selectedRecomand}`)
 
   useEffect(() => {
@@ -66,8 +66,7 @@ const Stockdetail = () => {
       .then((res) => res.json())
       .then((data) => setRecievedData(data));
   };
-  console.log(stockDetail);
-  console.log(insightDetails );
+
   return !stockDetail ? (
     <p>Loading...</p>
   ) : (
@@ -137,7 +136,7 @@ const Stockdetail = () => {
           <P>Quote type: {stockDetail.quoteType}</P>
         </StockdetailContainer>
         {!insightDetails || !stockDetail ? (
-          <p>Loading...</p>
+          <p style={{fontSize:"25px", marginLeft:"40px"}}>No insight details for this quote.</p>
         ) : (
           <InsightDetailscontainer>
             {currentUser ? (

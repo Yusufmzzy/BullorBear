@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import img from "../imgs/Wall.jpg";
+import img from "../imgs/Bullandbear.png";
 
 const Homepage = () => {
   const [stockMarketsummary, setStockMarketsummary] = useState(null);
@@ -17,40 +17,51 @@ const Homepage = () => {
       .then((data) => setStockNews(data.data));
   }, []);
   console.log(stockNews);
-  return !stockMarketsummary || !stockNews ? (
+  return !stockMarketsummary ? (
     <h1>Loading...</h1>
   ) : (
     <Wrapper>
       <SumaryDiv>
         <>
           {stockMarketsummary.result.map((ele) => (
-            <Eachsumarydiv>
-              <p>{ele.shortName}</p>
-
-              <p>
-                {ele.exchangeTimezoneName} {ele.regularMarketTime.fmt}
-              </p>
-
-              <h1>{ele.regularMarketPrice.fmt}</h1>
-
-              <MarketpriceDIv
-                style={
-                  ele.regularMarketChangePercent.raw > 0
-                    ? { backgroundColor: "#27a300" }
-                    : { backgroundColor: "#ff0000" }
-                }
+            <>
+              <Link
+                to={`/Stockdetail/${ele.symbol}`}
+                style={{ textDecoration: "none", color: "black" }}
               >
-                <h1>{ele.regularMarketChangePercent.fmt}</h1>
-              </MarketpriceDIv>
-            </Eachsumarydiv>
+                <Eachsumarydiv>
+                  <p>{ele.shortName}</p>
+
+                  <p>
+                    {ele.exchangeTimezoneName} {ele.regularMarketTime.fmt}
+                  </p>
+
+                  <h1>{ele.regularMarketPrice.fmt}</h1>
+
+                  <MarketpriceDIv
+                    style={
+                      ele.regularMarketChangePercent.raw > 0
+                        ? { backgroundColor: "#27a300" }
+                        : { backgroundColor: "#ff0000" }
+                    }
+                  >
+                    <h1>{ele.regularMarketChangePercent.fmt}</h1>
+                  </MarketpriceDIv>
+                </Eachsumarydiv>
+              </Link>
+              <Break />
+            </>
           ))}
         </>
       </SumaryDiv>
       <Cotainer2>
         <Wallstrertimg alt="Wall street" src={img} />
         <Newscontainer>
-          {stockNews.data.map((ele) => (
-            <a href={ele.news_url} style={{textDecoration:"none", color:"black"}}>
+          {stockNews?.data.map((ele) => (
+            <a
+              href={ele.news_url}
+              style={{ textDecoration: "none", color: "black" }}
+            >
               <SingleNewscontainer>
                 <Newsimg alt="Newsimg" src={ele.image_url} />
                 <ContantsContainer>
@@ -59,13 +70,21 @@ const Homepage = () => {
                   <p>{ele.date}</p>
                 </ContantsContainer>
               </SingleNewscontainer>
-           </a>
+            </a>
           ))}
         </Newscontainer>
       </Cotainer2>
     </Wrapper>
   );
 };
+const Break = styled.div`
+  height: 1px;
+  width: 100%;
+  background-color: black;
+  margin-top: 45px;
+  margin-bottom: 10px;
+`;
+
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
@@ -98,8 +117,8 @@ const MarketpriceDIv = styled.div`
   justify-content: center;
 `;
 const Wallstrertimg = styled.img`
-  height: 150px;
-  width: 350px;
+  height: 300px;
+  width: 1000px;
   border-radius: 10px;
   transition: transform 1s ease-in 10ms;
   :hover {
@@ -122,13 +141,21 @@ const Newsimg = styled.img`
 `;
 const SingleNewscontainer = styled.div`
   margin: 10px;
-  height: 200px;
+  height: 190px;
   display: flex;
   cursor: pointer;
+  transition: transform 1s ease-in 2ms;
+  :hover {
+    transform: scale(105%);
+    box-shadow: 0 0 3px grey;
+    background-color: #f2f3f4;
+  }
+  align-items: center;
 `;
 const ContantsContainer = styled.div`
   display: grid;
   height: 100%;
   margin-left: 10px;
+  align-items: center;
 `;
 export default Homepage;
