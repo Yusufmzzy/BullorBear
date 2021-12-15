@@ -113,4 +113,102 @@ const userLogin = async (req, res) => {
   }
 };
 
-module.exports = { createAnUser, userLogin };
+const addWatchList = async (req, res) => {
+  const { username, symbol } = req.body;
+  const client = new MongoClient(MONGO_URI, options);
+  try {
+    await client.connect();
+    const db = client.db("Finalproject");
+    const userNameResult = await db.collection("users").findOne({ username });
+    const stockResult = await db
+      .collection("watchList")
+      .find({ username })
+      .toArray();
+
+    const arr = stockResult.map((ele) => {
+      return ele.symbol;
+    });
+
+    if (!userNameResult) {
+      res.status(404).json({ status: "error", message: "User not found." });
+    } else if (arr.includes(symbol)) {
+      res.status(409).json({
+        status: 409,
+        message: "The stock is already in your watchlist.",
+      });
+    } else {
+      const addWatchList = await db
+        .collection("watchList")
+        .insertOne({ username: username, symbol: symbol });
+      res.status(200).json({
+        status: 200,
+        data: addWatchList,
+        message: "The stock has been added to your watchlist.",
+      });
+    }
+  } catch (err) {
+    console.log(err);
+  } finally {
+    client.close();
+  }
+};
+const getTheWatchList = async (req, res) => {
+  const { username } = req.params;
+  const client = new MongoClient(MONGO_URI, options);
+  try {
+    await client.connect();
+    const db = client.db("Finalproject");
+    const userNameResult = await db
+      .collection("watchList")
+      .find({ username })
+      .toArray();
+    if (userNameResult) {
+      res.status(200).json({ status: 200, data: userNameResult });
+    } else {
+      res.status(200).json({
+        status: 200,
+        data: userNameResult,
+        message: "Nothing in your watchlist.",
+      });
+    }
+  } catch (err) {
+    console.log(err);
+  } finally {
+    client.close();
+  }
+};
+
+const deleteFromWatchList = async (req, res) => {
+  const { username, symbol } = req.body;
+  const client = new MongoClient(MONGO_URI, options);
+  try {
+    await client.connect();
+    const db = client.db("Finalproject");
+    const userNameResult = await db
+      .collection("watchList")
+      .findOne({ username, symbol });
+    if (userNameResult) {
+      await db.collection("watchList").deleteOne({ username, symbol });
+      res.status(200).json({
+        status: 200,
+        message: "The stock has been deleted from your watchlist.",
+      });
+    } else {
+      res.status(404).json({
+        status: 404,
+        message: "No such a stock in your watchlist.",
+      });
+    }
+  } catch (err) {
+    console.log(err);
+  } finally {
+    client.close();
+  }
+};
+module.exports = {
+  createAnUser,
+  userLogin,
+  addWatchList,
+  getTheWatchList,
+  deleteFromWatchList,
+};

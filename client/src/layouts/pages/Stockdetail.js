@@ -3,6 +3,8 @@ import { useHistory, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { UserContext } from "./Context/UserContext";
+import { FiStar } from "react-icons/fi";
+import { WatchListContext } from "./Context/watchListContext";
 
 const Stockdetail = () => {
   let history = useHistory();
@@ -17,7 +19,13 @@ const Stockdetail = () => {
 
   const [similarStocks, setSimilarStocks] = useState(null);
 
+  const [recievedData, setRecievedData] = useState(null);
 
+  const { userWatchList } = useContext(WatchListContext);
+
+  const arr = userWatchList?.map((ele) => ele.symbol);
+
+  console.log(arr?.includes(symbol));
   // selectedRecomand && history.push(`/Stockdetail/${selectedRecomand}`)
 
   useEffect(() => {
@@ -42,7 +50,25 @@ const Stockdetail = () => {
       );
   }, [symbol]);
 
-  return !stockDetail || !insightDetails ? (
+  const addingWatchList = (ev) => {
+    ev.preventDefault();
+    fetch("/api/addWatchList", {
+      method: "POST",
+      body: JSON.stringify({
+        username: currentUser.username,
+        symbol: symbol,
+      }),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => setRecievedData(data));
+  };
+  console.log(stockDetail);
+  console.log(insightDetails );
+  return !stockDetail ? (
     <p>Loading...</p>
   ) : (
     <>
@@ -172,6 +198,22 @@ const Stockdetail = () => {
                 <p>Description: {insightDetails.valuation?.description}</p>
                 <p>Discount: {insightDetails.valuation?.discount}</p>
                 <p>Relative value: {insightDetails.valuation?.relativeValue}</p>
+                <StyledFistar
+                  onClick={(ev) => addingWatchList(ev)}
+                  style={
+                    arr?.includes(symbol) ||
+                    (recievedData && recievedData?.status === 200 ||
+                      
+                      recievedData?.status === 409)
+                      ? { fill: "#27a300" }
+                      : { fill: "white" }
+                  }
+                ></StyledFistar>
+                {recievedData?.status === 409 && (
+                  <p style={{ marginLeft: "200px", color: "#27a300" }}>
+                    {recievedData?.message}
+                  </p>
+                )}
               </>
             ) : (
               <p style={{ fontSize: "23px" }}>
@@ -184,6 +226,17 @@ const Stockdetail = () => {
     </>
   );
 };
+
+const StyledFistar = styled(FiStar)`
+  margin-left: 330px;
+  margin-top: 15px;
+  font-size: 35px;
+  cursor: pointer;
+  :hover {
+    transform: scale(107%);
+  }
+`;
+
 const Therecomand = styled.h2`
   cursor: pointer;
   :hover {

@@ -20,6 +20,6 @@ const Breakline = styled.div`
   width: 90%;
   background-color: #080708;
   margin-left: 70px;
-  margin-top: 5px;
+  margin-top: 15px;
 `;
 export default Footer;

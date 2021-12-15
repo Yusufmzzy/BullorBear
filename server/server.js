@@ -9,9 +9,15 @@ const {
   getTrendingStocks,
   getPopularStocks,
   getSimilarStocks,
-  getNews
+  getNews,
 } = require("./handlers");
-const { createAnUser, userLogin } = require("./usersHandlers");
+const {
+  createAnUser,
+  userLogin,
+  addWatchList,
+  getTheWatchList,
+  deleteFromWatchList,
+} = require("./usersHandlers");
 express()
   .use(express.json())
   .get("/api/quotes/:symbol", getSingleQuote) // stockDetailspage.
@@ -24,6 +30,9 @@ express()
   .post("/api/users", createAnUser) // create an user.
   .post("/api/login", userLogin) // create an user.
   .get("/api/news", getNews)
+  .post("/api/addWatchList", addWatchList)
+  .get("/api/getWatchlist/:username", getTheWatchList)
+  .delete("/api/deleteWatchList", deleteFromWatchList)
   .listen(PORT, function () {
     console.info("🌍 Listening on port " + PORT);
   });

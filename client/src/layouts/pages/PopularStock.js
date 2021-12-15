@@ -95,7 +95,7 @@ const Thepricediv = styled.div`
 `;
 const Thename = styled.h1`
   :hover {
-    transform: scale(105%);
+    transform: scale(102%);
     cursor: pointer;
   }
   width: 800px;

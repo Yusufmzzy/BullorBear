@@ -81,7 +81,7 @@ const Header = () => {
   //   };
   // }, []);
 
-  console.log(selectedPopular);
+  
   return (
     <Wrapper>
       <Logodiv>
