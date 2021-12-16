@@ -19,14 +19,13 @@ const Header = () => {
   // const [selectedStock, setSelectedStock] = useState(null);
 
   const [isDropped, setIsDropped] = useState(false);
-
+  const [isTrendingDropped, setIsTrendingDropped] = useState(false);
   // const [selectedPopular, setSelectedPopular] = useState(null);
 
   useEffect(() => {
     fetch(`/api/autocomplete?symbol=${inputValue}`)
       .then((res) => res.json())
       .then((data) => setRecievedVlues(data.data?.ResultSet.Result));
-  
   }, [inputValue]);
 
   let searchRef = useRef();
@@ -180,7 +179,35 @@ const Header = () => {
           )}
         </Populardiv>
         <Trendingdiv>
-          <TheOption>Trending Stocks</TheOption>
+          <TheOption
+            onMouseEnter={() => setIsTrendingDropped(true)}
+            onMouseLeave={() => setIsTrendingDropped(false)}
+          >
+            Trending Stocks
+          </TheOption>
+          {isTrendingDropped && (
+            <TrendingButtondiv
+              onMouseEnter={() => setIsTrendingDropped(true)}
+              onMouseLeave={() => setIsTrendingDropped(false)}
+            >
+              <TheTrenddingButton
+                value="US"
+                onClick={(ev) => {
+                  history.push(`/TrendingStocks/${ev.target.value}`);
+                }}
+              >
+                US
+              </TheTrenddingButton>
+              <TheTrenddingButton
+                value="CA"
+                onClick={(ev) => {
+                  history.push(`/TrendingStocks/${ev.target.value}`);
+                }}
+              >
+                CA
+              </TheTrenddingButton>
+            </TrendingButtondiv>
+          )}
         </Trendingdiv>
       </Navdiv>
       <Breakline></Breakline>
@@ -303,6 +330,24 @@ const Buttondiv = styled.div`
   margin-top: 3px;
 `;
 const Thebutton = styled.button`
+  border: none;
+  background-color: white;
+  font-size: 18px;
+  :hover {
+    background-color: grey;
+    color: white;
+  }
+  width: 110px;
+`;
+const TrendingButtondiv = styled.div`
+  width: 110px;
+  height: 50px;
+  box-shadow: 0 0 2px grey;
+  position: absolute;
+  background-color: white;
+  margin-top: 3px;
+`;
+const TheTrenddingButton = styled.button`
   border: none;
   background-color: white;
   font-size: 18px;

@@ -9,7 +9,7 @@ export const WatchListContextProvider = ({ children }) => {
     fetch(`/api/getWatchlist/${currentUser?.username}`)
       .then((res) => res.json())
       .then((data) => setUserWatchList(data.data));
-  }, [currentUser?.username,userWatchList]);
+  }, [currentUser,userWatchList]);
 
   return (
     <WatchListContext.Provider value={{ userWatchList }}>

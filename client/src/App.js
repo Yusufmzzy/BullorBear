@@ -24,7 +24,7 @@ function App() {
           <Route path="/Stockdetail/:symbol">
             <Stockdetail />
           </Route>
-          <Route path="/TrendingStocks">
+          <Route path="/TrendingStocks/:region">
             <TrendingStocks />
           </Route>
           <Route path="/PopularStocks/:day_status">

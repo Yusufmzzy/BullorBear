@@ -24,8 +24,12 @@ const Stockdetail = () => {
   const { userWatchList } = useContext(WatchListContext);
 
   const arr = userWatchList?.map((ele) => ele.symbol);
+  
+  
+  console.log(stockDetail);
+  console.log(insightDetails);
+  console.log(similarStocks);
 
- 
   // selectedRecomand && history.push(`/Stockdetail/${selectedRecomand}`)
 
   useEffect(() => {
@@ -83,7 +87,7 @@ const Stockdetail = () => {
         </Recommendation>
         <StockdetailContainer>
           <H1 style={{ fontSize: "33px" }}>
-            {stockDetail.longName}
+            {stockDetail.longName ? stockDetail.longName : stockDetail.symbol}
             <Pricewrapper>
               {stockDetail.regularMarketPrice.fmt}
               {stockDetail.currencySymbol}
@@ -136,7 +140,9 @@ const Stockdetail = () => {
           <P>Quote type: {stockDetail.quoteType}</P>
         </StockdetailContainer>
         {!insightDetails || !stockDetail ? (
-          <p style={{fontSize:"25px", marginLeft:"40px"}}>No insight details for this quote.</p>
+          <p style={{ fontSize: "25px", marginLeft: "40px" }}>
+            No insight details for this quote.
+          </p>
         ) : (
           <InsightDetailscontainer>
             {currentUser ? (
@@ -150,9 +156,9 @@ const Stockdetail = () => {
                 >
                   Key technicals
                 </p>
-                <p>Provider: {insightDetails.keyTechnicals.provider}</p>
-                <p>stopLoss: {insightDetails.keyTechnicals.stopLoss}</p>
-                <p>support: {insightDetails.keyTechnicals.support}</p>
+                <p>Provider: {insightDetails.keyTechnicals?.provider}</p>
+                <p>stopLoss: {insightDetails.keyTechnicals?.stopLoss}</p>
+                <p>support: {insightDetails.keyTechnicals?.support}</p>
                 <Break />
                 <p
                   style={{
@@ -163,10 +169,10 @@ const Stockdetail = () => {
                 >
                   Technical events
                 </p>
-                <p>provider: {insightDetails.technicalEvents.provider}</p>
-                <p>Short term: {insightDetails.technicalEvents.shortTerm}</p>
-                <p>Mid term: {insightDetails.technicalEvents.midTerm}</p>
-                <p>Long term: {insightDetails.technicalEvents.longTerm}</p>
+                <p>provider: {insightDetails.technicalEvents?.provider}</p>
+                <p>Short term: {insightDetails.technicalEvents?.shortTerm}</p>
+                <p>Mid term: {insightDetails.technicalEvents?.midTerm}</p>
+                <p>Long term: {insightDetails.technicalEvents?.longTerm}</p>
                 <Break />
                 <p
                   style={{
@@ -201,9 +207,8 @@ const Stockdetail = () => {
                   onClick={(ev) => addingWatchList(ev)}
                   style={
                     arr?.includes(symbol) ||
-                    (recievedData && recievedData?.status === 200 ||
-                      
-                      recievedData?.status === 409)
+                    (recievedData && recievedData?.status === 200) ||
+                    recievedData?.status === 409
                       ? { fill: "#27a300" }
                       : { fill: "white" }
                   }
